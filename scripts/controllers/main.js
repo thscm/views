@@ -16,59 +16,45 @@ angular.module('vtoneWorldcomApp')
         ];
     });
 
-angular.module('vtoneWorldcomApp')
-    .controller('MenuLeftCtrl', function($scope) {
-        $scope.MenuLeftData = [{
-                "descr": "首页",
-                "href": "#",
-                "class": "active"
-            }, {
-                "descr": "手工建单",
-                "href": "#",
-                "class": ""
-            }, {
-                "descr": "订单记录",
-                "href": "#",
-                "class": "dropdown",
-                "submenu": [{
-                    "descr": "Action"
-                }, {
-                    "descr": "Other Action"
-                }]
-            }, {
-                "descr": "零售商品",
-                "href": "#",
-                "class": "dropdown",
-                "submenu": [{
-                    "descr": "Action"
-                }, {
-                    "descr": "Other Action"
-                }]
-            }, {
-                "descr": "订单审核",
-                "href": "#",
-                "class": "dropdown",
-                "submenu": [{
-                    "descr": "Action"
-                }, {
-                    "descr": "Other Action"
-                }]
-            }
-
-        ];
+angular.module('vtoneWorldcomApp').controller('TopMenuCtrl', ['$scope', '$http', function($scope, $http) {
+    $http.get('scripts/menu.json').
+    success(function(data, status, headers, config) {
+        $scope.TopMenuData = data;
+        $scope.$watch('TopMenuData', function() {
+            setTimeout(function(){
+                $(".TopMenu").dropdown();
+            },1000);
+        });
+    }).
+    error(function(data, status, headers, config) {
+        alert(status);
     });
+}]);
+
 
 function layout() {
-    $("#main").css("width", $(window).width() - 200);
-    $("#sidebar").css("height", $(window).height() - 45);
-    $("#main").css("height", $(window).height() - 45);
+    $('#main').css('width', $(window).width() - 240);
+    $('#main').css('height', $(window).height() - 82);
+    $('#main_carouse').css('height', $(window).height() - 92);
 }
-jQuery(function($) {
+
+function moveMainCarouse(index) {
+    $('#main_carouse').find(".markers").find("a").eq(index).trigger('click');
+}
+$(function($) {
     $(document).ready(function() {
         layout();
+        $('#main_carouse').find(".markers").css("display", "none");
     });
 });
 
 $(window).resize(function() {
     layout();
+});
+$('#main_carouse').carousel({
+    auto: false,
+    stop: true,
+    markers: {
+        type: "square"
+    }
 });
